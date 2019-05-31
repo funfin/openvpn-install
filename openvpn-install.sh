@@ -67,6 +67,21 @@ function checkOS () {
 			fi
 		fi
 		OS=centos
+	elif [[ -e /etc/system-release ]]; then
+                if ! grep -qs "^Amazon Linux release 2" /etc/system-release; then
+                        echo "Your version of Amazon Linux is not supported."
+                        echo "The script only support CentOS 7."
+                        echo ""
+                        unset CONTINUE
+                        until [[ $CONTINUE =~ (y|n) ]]; do
+                                read -rp "Continue anyway? [y/n]: " -e CONTINUE
+                        done
+                        if [[ "$CONTINUE" = "n" ]]; then
+                                echo "Ok, bye!"
+                                exit 1
+                        fi
+                fi
+                OS=centos		
 	elif [[ -e /etc/arch-release ]]; then
 		OS=arch
 	else
